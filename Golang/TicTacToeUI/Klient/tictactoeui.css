@@ -1,0 +1,180 @@
+body {
+  margin: 0;
+  height: 100%;
+  background-color: #F4700B;
+}
+
+html {
+  margin: 0;
+  height: 100%;
+}
+
+input.UIButton:hover {
+    cursor: pointer;
+    transition-timing-function: ease-in-out;
+    transition: background-color 250ms;
+    background-color: #d6d4d4;
+}
+
+div#lobbyArea {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 90%;
+  height: 90%;
+  background-color: #05182d;
+  font-family: "Segoe UI", "Times", "Light";
+}
+
+div#lobbyArea ul {
+  list-style: none;
+}
+
+div#lobbyMeta {
+  float:left;
+  padding-right: 1%;
+  height: 100%;
+}
+
+input.UINumber {
+  border-radius: 0.5em;
+  display: block;
+  text-align: center;
+  font-family: "Segoe UI", "Times", "Light";
+  color: #ff7300;
+  transition-timing-function: ease-in-out;
+  transition: background-color 250ms;
+  outline: none;
+  border: none;
+  width: 100%;
+  margin-bottom: 5%;
+  font-size: 2em;
+  position: relative;
+
+  background: none;
+  background-color: #ffffff;
+  outline: inherit;
+}
+
+div#messageViewPort {
+  background-color: #082b52;
+  display: flex;
+  height: 90%;
+}
+
+div#messageArea {
+  text-align: center;
+}
+
+input#messageWriter {
+  position: absolute;
+  transform: translate(-50%, 50%);
+}
+
+div#lobbyArea ul li {
+  font-size: 2em;
+  color: white;
+}
+
+div#lobbyArea h1 {
+  padding-left: 1em;
+  color: white;
+}
+
+div#ESCMenuOverlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(8, 43, 82, 0.9);
+  position: absolute;
+  z-index: 1;
+}
+
+input.UIButton {
+    border-radius: 0.5em;
+    display: block;
+    text-align: center;
+    font-family: "Segoe UI", "Times", "Light";
+    color: #ff7300;
+    transition-timing-function: ease-in-out;
+    transition: background-color 250ms;
+    outline: none;
+    border: none;
+    width: 100%;
+    margin-bottom: 5%;
+    font-size: 2em;
+    position: relative;
+
+    background: none;
+    background-color: #ffffff;
+  	outline: inherit;
+}
+
+td {
+  width: 12.5em;
+  height: 12.5em;
+}
+
+td h1 {
+  text-align: center;
+  font-family: "Segoe UI", "Times", "Light";
+  font-size: 5em;
+}
+
+td h1.X {
+  color: #05182d;
+}
+
+td h1.O {
+  color: #610505; 
+}
+
+table {
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 5px auto;
+}
+
+.vert {
+  border-left: 1.5em solid #05182d;
+  border-right: 1.5em solid #05182d;
+}
+
+.hori {
+  border-top: 1.5em solid #05182d;
+  border-bottom: 1.5em solid #05182d;
+}
+
+div#MenuViewPort {
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -75%);
+    position: absolute;
+}
+
+h1#MenuTitle {
+    font-family: "Segoe UI", "Times", "Light";
+    font-size: 4em;
+}
+
+h4.UIElementTitle {
+  margin-bottom: 3%;
+  font-family: "Segoe UI", "Times", "Light";
+  font-size: 1.5em;
+}
+
+h4#ErrorMessage {
+  font-family: "Segoe UI", "Times", "Light";
+  color: white;
+}
+
+div#ErrorState {
+  left: 50%;
+  transform: translate(-50%, 0);
+  position: absolute;
+  padding: 0.25em;
+  background-color: #05182d;
+}

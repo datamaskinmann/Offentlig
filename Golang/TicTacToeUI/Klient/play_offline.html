@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="MenuViewPort">
+            <h1 id="MenuTitle">Play offline</h1>
+            <input type="button" class="UIButton" id="Local1v1" value="Local 1 vs 1">
+            <input type="button" class="UIButton" id="MMBack" value="Back">
+        </div>
+    </body>
+    <script type="text/tiscript">
+        var root = view.root;
+        self#MMBack.on("click", function(){             
+            view.MMBack();
+        })
+
+        self#Local1v1.on("click", function(){
+            view.Local1v1();
+        })
+    </script>
+</html>

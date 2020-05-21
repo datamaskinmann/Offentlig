@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="MenuViewPort">
+            <h1 id="MenuTitle">Play online</h1>
+            <input type="button" class="UIButton" id="HostTournament" value="Host Tournament">
+            <input type="button" class="UIButton" id="JoinTournament" value="Join Tournament">
+            <input type="button" class="UIButton" id="MMBack" value="Back">
+        </div>
+    </body>
+    <script type="text/tiscript">
+        var root = view.root;
+        self#MMBack.on("click", function(){             
+            view.MMBack()
+        })
+        
+        self#HostTournament.on("click", function(){
+            view.HostTournament();
+        })
+
+        self#JoinTournament.on("click", function(){
+            view.JoinTournament();
+        })
+    </script>
+</html>

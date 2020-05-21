@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="MenuViewPort">
+            <h1 id="MenuTitle">Join Tournament</h1>
+            <h4 class="UIElementTitle">Lobby ID</h4>
+            <input type="text" class="UIButton" id="lobbyId">
+            <input type="button" class="UIButton" id="jointourn" value="Join">
+            <input type="button" class="UIButton" id="MMBack" value="Back">
+        </div>
+    </body>
+    <script type="text/tiscript">
+        var root = view.root;
+        self#MMBack.on("click", function(){
+            view.MMBack();
+        })
+
+        self#jointourn.on("click", function(){
+            view.clickJoin(self.$(#lobbyId).value);
+        })
+
+    </script>
+</html>

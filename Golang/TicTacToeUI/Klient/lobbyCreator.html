@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="tictactoeui.css">
+    </head>
+    <body>
+        <div id="MenuViewPort">
+            <h1 id="MenuTitle">Lobby creator</h1>
+            <h4 class="UIElementTitle">Amount of players</h4>
+            <input type="number" class="UINumber" id="numPlayers" step="2" min="2" value="2">
+            <input type="button" class="UIButton" value="Create lobby" id="createLobby">
+            <input type="button" class="UIButton" value="Back" id="HTBack">
+        </div>
+    </body>
+    <script type="text/tiscript">
+        self#HTBack.on("click", function(){
+            view.HTBack();
+        })
+
+        self#createLobby.on("click", function(){
+            if(self.$(#numPlayers).value % 2 != 0) {
+                if(self.$(#ErrorState) !== undefined) {
+                    // Det finnes allerede en error melding på skjermen
+                    return;
+                }
+                $(body).$append(<div id="ErrorState" style="top: 5%;"><h4 id="ErrorMessage">Amount of players must be an even number</h1></div>);
+                    self.timer(3s, function() {
+                        $(#ErrorState).remove();
+                     });
+                return;
+            }
+
+            view.CreateLobby($(#numPlayers).value)
+        })
+    </script>
+</html>

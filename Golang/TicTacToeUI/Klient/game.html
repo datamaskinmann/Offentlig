@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="tictactoeui.css">
+    </head>
+    <body>
+        <h1 id="MenuTitle" style="position: absolute; left: 50%; transform: translate(-50%, 0px)"></h1>
+    <table>
+        <tr>
+            <td id="0_0"></td>
+            <td id="0_1" class="vert"></td>
+            <td id="0_2"></td>
+        </tr>
+        <tr>
+            <td id="1_0" class="hori"></td>
+            <td id="1_1" class="vert hori"></td>
+            <td id="1_2" class="hori"></td>
+        </tr>
+        <tr>
+            <td id="2_0"></td>
+            <td id="2_1" class="vert"></td>
+            <td id="2_2"></td>
+        </tr>
+    </table>
+</body>
+    <script type="text/tiscript">
+        var root = view.root;
+        var menu = false;
+
+        self.on("click", "td", function(){
+            view.DoMove(this.id);
+        })
+
+        self.on("click", "#No", function(){
+            $(#ESCMenuOverlay).remove();
+            generateESCMenu();
+        })
+
+        self.on("click", "#Yes", function(){
+            view.MMBack();
+        })
+
+        self.on("click", "#ExitToMain", function(){
+            $(#ESCMenuOverlay).remove();
+            $(body).$append(<div id="ESCMenuOverlay"><div id="MenuViewPort"><h1 id="MenuTitle">Are you sure?</h1><input type="button" id="Yes" class="UIButton" value="Yes"><input type="button" id="No" class="UIButton" value="No"></div></div>);
+        })
+
+        function generateESCMenu() {
+            $(body).$append(<div id="ESCMenuOverlay"><div id="MenuViewPort"><h1 id="MenuTitle">Menu</h1><input type="button" id="ExitToMain" class="UIButton" value="Exit to main menu"><input type="button" id="Close" class="UIButton" value="Close menu"></div></div>);
+        }
+
+        self.on("click", "#Close", function(){
+            $(#ESCMenuOverlay).remove();
+            menu = false;
+        })
+
+        event keypress (e) {
+            switch(e.keyCode) {
+                case 27: // 27 = Escape
+                    switch(menu) {
+                        case true:
+                            $(#ESCMenuOverlay).remove();
+                            menu = false;
+                        break;
+                        case false:
+                            generateESCMenu();
+                            menu = true;
+                        break;
+                    }
+                break;
+            }
+        }
+    </script>
+<html>
