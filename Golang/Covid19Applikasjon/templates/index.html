@@ -1,0 +1,153 @@
+<html>
+    <div style="display: inline-block" id="cr">
+        <img src="/tmpfiles/uialog.png" style="vertical-align: middle;">
+    </div>
+    <head>
+        <script type="text/javascript" src="/tmpfiles/loader.js"></script>
+        <script type="text/javascript" src="/tmpfiles/jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="/tmpfiles/dataRegression.02042020(1).min.js"></script>
+    </head>
+    <body style="background: url('/tmpfiles/bgimg.png') no-repeat; background-size: 200%;">
+    <div id="line_top_x" style="position: absolute; top: 50%; left:50%; transform: translate(-50%, -50%);"></div>
+    <script type="text/javascript">
+            Date.prototype.addDays = function(days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+
+        Date.prototype.truncateHour = function(hours) {
+            var date = new Date(this.valueOf());
+            date.setHours(date.getHours() + Math.round(hours));
+            date.setMinutes(0);
+            date.setSeconds(0);
+            return date;
+        }
+    </script>
+    <script type="text/javascript">
+
+        var webData;
+        var tblen;
+        var polyfunc;
+
+        fetchCache();
+
+        function fetchCache() {
+            var callback = function(rawData) {
+                webData = JSON.parse(rawData);
+                tblen = Object.keys(webData).length;
+                polyfunc = buildPolynomial(webData);
+
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                google.charts.setOnLoadCallback(drawChart2);
+            }
+            
+            if(window.localStorage.getItem("covid19NorgeExpire") == null || window.localStorage.getItem("covid19NorgeJSON" == null)) {
+                renewCache(callback);
+                return;
+            }
+            if(new Date(Date.now()) > new Date(window.localStorage.getItem("covid19NorgeExpire"))) {
+                renewCache(callback);
+                return;
+            }
+            console.log("Loaded from cache");
+            callback(window.localStorage.getItem("covid19NorgeJSON"));
+        }
+
+        function renewCache(callback) {
+            console.log("Renewing cache");
+            getServerCache(function(raw, expire) {
+                // Cache data
+                window.localStorage.setItem("covid19NorgeJSON", raw);
+                window.localStorage.setItem("covid19NorgeExpire", expire);
+                //
+                callback(raw);
+            });
+        }
+
+        function getServerCache(callback) {
+            var XMLHTTP = new XMLHttpRequest();
+            XMLHTTP.open("GET", "/getCovidNorgeJson");
+            XMLHTTP.setRequestHeader("Accept", "application/json");
+            XMLHTTP.onreadystatechange = function() {
+                if(XMLHTTP.status == 200 && XMLHTTP.readyState == 4) {
+                    callback(XMLHTTP.responseText, XMLHTTP.getResponseHeader("Expires"));
+                }
+            }
+            XMLHTTP.send();
+        }
+        
+        var absoluteStartDay = new Date('February 27, 2020');
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Dato');
+            data.addColumn('number', 'Virkelige tall');
+            data.addColumn('number', 'Prognose');
+
+            for(let i = (tblen-30)-1; i < tblen+10; i++) {
+                data.addRows([
+                    i < tblen ? [absoluteStartDay.addDays(i), webData[i].TotalCases, null] :
+                        [absoluteStartDay.addDays(i), null, Math.round(doPolynomialFunction(polyfunc, i))],
+                ])
+            }
+
+            var options = {
+                title: 'COVID-19 Tilfeller i Norge - utvikling over 30 dager',
+                width: $(window).width()*0.90,
+                height: $(window).height()*0.75,
+                pointSize: 15,
+                lineWidth: 5,
+                hAxis: {
+                    format: 'dd/MM'
+                },
+            };
+
+
+            var chart = new google.visualization.LineChart(document.getElementById('line_top_x'));
+
+            chart.draw(data, options);
+        }
+
+        function drawChart2() {
+            var data = new google.visualization.DataTable();
+
+            data.addColumn('date', 'Dato');
+            data.addColumn('number', 'Nye tilfeller');
+            data.addColumn('number', 'Nye dødsfall');
+
+            for(let i = (tblen-15)-1; i < tblen; i++) {
+                data.addRows([
+                    [absoluteStartDay.addDays(i), webData[i].TotalCases-webData[i-1].TotalCases, webData[i].TotalDeaths-webData[i-1].TotalDeaths],
+                ])
+            }
+            var options = {
+                title: 'COVID-19 Nye tilfeller og nye dødsfall sammenstilt i en periode på 15 dager i Norge',
+                width: $(window).width()*0.90,
+                height: $(window).height()*0.75,
+                pointSize: 15,
+                lineWidth: 5,
+                hAxis: {
+                    format: 'dd/MM'
+                },
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('ch2'));
+
+            chart.draw(data, options);
+        }
+
+        
+        // polynomligning på 5 siste data
+        function buildPolynomial(covidData) {
+            let tempData = {};
+            for(let i = covidData.length-15; i < covidData.length; i++) {
+                tempData [i] = covidData[i].TotalCases;
+            }
+            return get2DegreePolynomialRegressionFunction(tempData );
+        }
+    </script>
+    <div id="ch2" style="position: absolute; top: 150%; left:50%; height: 100%; transform: translate(-50%, -50%);"></div>
+    </body>
+</html>
