@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SystemInfo</name>
+    </assembly>
+    <members>
+        <member name="T:SystemInfo.Diagnostics">
+            <summary>
+            This class contains diagnostics associated with this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Diagnostics.RunningProcesses">
+            <summary>
+            Gets the amount of processes with the 'running' state on this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Diagnostics.Processes">
+            <summary>
+            Gets the processes on this system
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Diagnostics.MostMemoryIntensive">
+            <summary>
+            Gets the most memory-intensive process on this computer
+            </summary>
+        </member>
+        <member name="M:SystemInfo.Diagnostics.CommandLine(System.Diagnostics.Process)">
+            <summary>
+            Gets the commandline-arguments associated with a process
+            </summary>
+            <param name="P">The process you want to check the commandline-arguments associated with</param>
+            <returns>A string which represents the commandline-arguments associated with process P</returns>
+        </member>
+        <member name="M:SystemInfo.Diagnostics.CPUUsage(System.Diagnostics.Process)">
+            <summary>
+            Gets the CPUUsage of a process
+            </summary>
+            <param name="P">The process you want to check the CPU usage for</param>
+            <returns>A double which represents in %, the CPU usage associated with process P</returns>
+        </member>
+        <member name="M:SystemInfo.Management.CMDCOMMAND(System.String)">
+            <summary>
+            Runs a CMD command and reads from echo
+            </summary>
+            <param name="args">The command you want to run</param>
+            <returns>A string array containing each line of the result</returns>
+        </member>
+        <member name="T:SystemInfo.Specifications">
+            <summary>
+            This class contains specifications associated with this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.ProcessorModel">
+            <summary>
+            Gets the processor-model of this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.ProcessorCores">
+            <summary>
+            Gets the amount of cores in this computer's processor
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.ProcessorArchitecture">
+            <summary>
+            Gets the processor architecture of this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.ProcessorMaxClockFrequency">
+            <summary>
+            Gets the max clock frequency of this computer's processor in megaherz
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.L1CacheSize">
+            <summary>
+            Gets the L1 cache size of this computer's processor
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.L2CacheSize">
+            <summary>
+            Gets the L2 cache size of this computer's processor
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.L3CacheSize">
+            <summary>
+            Gets the L3 cache size of this computer's processor
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.TotalMemorySize">
+            <summary>
+            Gets the total visible memory of this computer in bytes
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.GPUModel">
+            <summary>
+            Gets the GPU Model of this computer
+            </summary>
+        </member>
+        <member name="P:SystemInfo.Specifications.GPUVRAM">
+            <summary>
+            Gets the amount of dedicated vram of this computer's GPU in bytes
+            </summary>
+        </member>
+    </members>
+</doc>
