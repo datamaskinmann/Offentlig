@@ -1,0 +1,1 @@
+Dette er bare noen bilder av applikasjonen slik den ser ut.
