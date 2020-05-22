@@ -1,0 +1,61 @@
+.noScroll {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+#userLogin {
+    background: rgba(128, 138, 138, 0.6);
+    border-radius: 3.17%;
+    height: 82%;
+    width: 28%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input.stdIn {
+    padding-left: 2%;
+    font-size: 1vw;
+    color: #3d3d3d;
+    border-radius: 50px;
+    margin: 3%;
+    height: 4%;
+    width: 80%;
+    background-color: white;
+    border-style: hidden;
+}
+
+div.centerText {
+    text-align: center;
+}
+
+div#userLogin > * {
+    position: relative;
+    left: 50%;
+    top: 32.5%;
+    transform: translate(-50%, -50%);
+}
+
+text {
+    font-size: 2vw;
+}
+
+#login {
+    font-size: 1vw;
+    background: #39b54a;
+    border-style: none;
+    border-radius: 50px;
+    margin-top: 3%;
+    height: 4%;
+    width: 50%;
+}
+
+#login:hover {
+    cursor: pointer;
+}
+
+#login:disabled {
+    color: black;
+}

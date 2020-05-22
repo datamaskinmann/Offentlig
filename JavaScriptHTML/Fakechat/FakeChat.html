@@ -1,0 +1,316 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="FakeChatStyle.css">
+    <script src="jquery-3.5.0.min.js"></script>
+</head>
+
+<body>
+    <div class="content_container">
+        <div id="messagesContainer">
+            <div id="messagesViewPort" class="scroller">
+            </div>
+            <div id="messageWriter">
+                <textarea id="msgInput" type="text" placeholder="Skriv en melding ..."></textarea>
+            </div>
+        </div>
+        <div id="profileInfoContainer">
+            <img onclick="expandOnMobile()" src="Sven.jpg" class="profilePictureLarge">
+            <span class="profileInfo hide_info_on_mobile">
+                <h4>Sven Sørensen</h4>
+                <h3>Aktiv Nå</h3>
+            </span>
+        </div>
+        <div onclick="expandOnMobile()" class="background_div_mobile"></div>
+    </div>
+    <script type="text/javascript">
+        if (window.localStorage.getItem("lastMsg") == null) {
+            window.localStorage.setItem("lastMsg", JSON.stringify(new Date("2020-01-01")));
+        }
+
+        function getTextWidth(text, font) {
+            // re-use canvas object for better performance
+            var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+            var context = canvas.getContext("2d");
+            context.font = font;
+            var metrics = context.measureText(text);
+            return metrics.width;
+        }
+
+        let lastMsg = new Date(JSON.parse(window.localStorage.getItem("lastMsg")));
+        loadMessages();
+        $("textarea#msgInput").keydown(function (e) {
+            // Enter was pressed without shift key
+            if (e.keyCode == 13 && !e.shiftKey) {
+                let buffer = "";
+                let str = "";
+                for (let i = 0; i < e.target.value.length; i++) {
+                    buffer += e.target.value[i];
+                    str += e.target.value[i];
+                    if (getTextWidth(buffer, "Segoe UI") >
+                        document.getElementById("messagesViewPort").clientHeight / 3) {
+                        buffer += "\n";
+                        str += "\n";
+                        buffer = "";
+                    } else if(e.target.value[i] == '\n') {
+                        str += buffer;
+                        buffer = "";
+                    }
+                }
+
+                if (str.length <= 0) {
+                    e.preventDefault();
+                    return;
+                }
+
+                if (str.replace(/\s/g, '').length <= 0) {
+                    e.preventDefault();
+                    return;
+                }
+
+                let nowTime = new Date();
+
+                let hoursFormat = nowTime.getHours() < 10 ?
+                    ("0" + nowTime.getHours().toString()) :
+                    nowTime.getHours().toString();
+                let minutesFormat = nowTime.getMinutes() < 10 ?
+                    ("0" + nowTime.getMinutes().toString()) :
+                    nowTime.getMinutes().toString();
+
+
+
+                appendContext(str.replace(/(?:\r\n|\r|\n)/g, '<br>'), {
+                    stampText: hoursFormat + ":" + minutesFormat,
+                });
+
+                let diff = Math.floor(((new Date() - lastMsg) / 1000) / 60);
+                let responseRawText = responses[Math.floor(Math.random() * responses.length)];
+                
+                var wpm = Math.floor(Math.random() * ((90-60)+1)) + 60; // Mellom 60 og 90 wpm
+
+                sync += wpm*responseRawText.length;
+
+                repositionWaiter();
+                setTimeout(function(wait) {
+                    
+                    appendResponse(responseRawText, {
+                        indented: diff >= 2 ? true : false,
+                        stampText: hoursFormat + ":" + minutesFormat,
+                    }, true, wait);
+
+                    saveResponse(responseRawText, {
+                        indented: diff >= 2 ? true : false,
+                        stampText: hoursFormat + ":" + minutesFormat,
+                    });
+
+                    saveContext(str.replace(/(?:\r\n|\r|\n)/g, '<br>'), {
+                        stampText: hoursFormat + ":" + minutesFormat,
+                    });
+
+                    sync -= wpm*responseRawText.length;
+
+                }, sync);
+
+                if (diff >= 2) {
+                    lastMsg = new Date();
+                    window.localStorage.setItem("lastMsg", JSON.stringify(lastMsg));
+                }
+
+                document.getElementById("messagesViewPort").scrollTop =
+                    document.getElementById("messagesViewPort").scrollHeight;
+
+                e.target.value = "";
+                e.preventDefault();
+            }
+        });
+
+        function saveResponse(rawText, timestamp) {
+            if (window.localStorage.getItem("responses") == null) {
+                window.localStorage.setItem("responses", JSON.stringify([]));
+            }
+            let array = JSON.parse(window.localStorage.getItem("responses"));
+            array[array.length] = ({
+                rawText: rawText,
+                timestamp: timestamp,
+            });
+
+            window.localStorage.setItem("responses", JSON.stringify(array));
+        }
+
+        function saveContext(rawText, timestamp) {
+            if (window.localStorage.getItem("contexts") == null) {
+                window.localStorage.setItem("contexts", JSON.stringify([]));
+            }
+            let array = JSON.parse(window.localStorage.getItem("contexts"));
+            array[array.length] = ({
+                rawText: rawText,
+                timestamp: timestamp,
+            });
+
+            window.localStorage.setItem("contexts", JSON.stringify(array));
+        }
+
+        function loadMessages() {
+            let contexts = JSON.parse(window.localStorage.getItem("contexts"));
+            let responses = JSON.parse(window.localStorage.getItem("responses"));
+
+            if (contexts == null || responses == null) return;
+
+            for (let i = 0; i < contexts.length; i++) {
+                appendContext(contexts[i].rawText, contexts[i].timestamp);
+                appendResponse(responses[i].rawText, responses[i].timestamp, false, 0);
+                if (i > responses.length) break;
+            }
+        }
+
+        var sync = 0;
+
+        function appendResponse(rawText, timestamp, waiter, waitTime) {
+            let msgViewPort = document.getElementById("messagesViewPort");
+
+            
+            let responseWrapper = document.createElement("div");
+            responseWrapper.setAttribute("class", "responseWrapper");
+
+            var img = document.createElement("img");
+            img.setAttribute("class", "profilePicture");
+            img.setAttribute("src", "Sven.jpg");
+
+            if(waiter) {
+
+                setTimeout(function timeoutFinish(){
+                    appendResponse(rawText, timestamp, false);
+                    repositionWaiter();
+                    if(sync <= 0) {
+                        removeMessageWaiter();
+                    }
+                }, false, 0);
+                return;
+            }
+
+            appendBreakLine(msgViewPort);
+
+            var responseMessage = document.createElement("div");
+            responseMessage.setAttribute("class", "responseMessage");
+            responseMessage.innerHTML = rawText
+
+            if (timestamp.indented) {
+                var h4 = document.createElement("h4");
+                h4.setAttribute("class", "timestamp");
+
+                h4.innerHTML = timestamp.stampText;
+                responseWrapper.appendChild(h4);
+
+            }
+            
+            responseWrapper.appendChild(img);
+            responseWrapper.appendChild(responseMessage);
+            msgViewPort.appendChild(responseWrapper);
+
+            // Scrolle til bunns slik at man ser meldinga med en gang
+            document.getElementById("messagesViewPort").scrollTop =
+            document.getElementById("messagesViewPort").scrollHeight;
+        }
+
+        function appendMessageWaiter(element) {
+            console.log("HELLO");
+            var img = document.createElement("img");
+            img.setAttribute("class", "profilePicture");
+            img.setAttribute("src", "Sven.jpg");
+
+            let div = document.createElement("div");
+                div.setAttribute("class", "messageWaiter");
+
+                let typingGif = document.createElement("img");
+                typingGif.setAttribute("src", "typing.gif");
+                typingGif.setAttribute("class", "waiterAnim");
+
+                div.appendChild(img);
+
+                div.appendChild(typingGif);
+
+                element.appendChild(div);
+        }
+
+        function removeMessageWaiter() {
+            let elem = document.getElementById("messagesViewPort");
+            for(let i = 0; i < elem.children.length; i++) {
+                if(elem.children[i].classList.contains("messageWaiter")) {
+                    elem.removeChild(elem.children[i]);
+                    return;
+                } 
+            }
+        }
+
+        function repositionWaiter() {
+            let messagesViewPort = document.getElementById("messagesViewPort");
+            removeMessageWaiter();
+            appendMessageWaiter(messagesViewPort);
+        }
+
+        function appendMessageWaiter(element) {
+            let img = document.createElement("img");
+            img.setAttribute("class", "profilePicture");
+            img.setAttribute("src", "Sven.jpg");
+
+            let div = document.createElement("div");
+            div.setAttribute("class", "messageWaiter");
+
+            let typingGif = document.createElement("img");
+            typingGif.setAttribute("src", "typing.gif");
+            typingGif.setAttribute("class", "waiterAnim");
+
+            div.appendChild(img);
+
+            div.appendChild(typingGif);
+
+            element.appendChild(div);
+        }
+
+        function appendContext(rawText, timestamp) {
+            let msgViewPort = document.getElementById("messagesViewPort");
+            appendBreakLine(msgViewPort);
+            let meMessage = document.createElement("div");
+            meMessage.setAttribute("class", "meMessage");
+
+            meMessage.innerHTML = rawText;
+            msgViewPort.appendChild(meMessage);
+        }
+
+        $(window).on('load', function () {
+            document.getElementById("profileInfoContainer").style.height =
+                document.getElementById("messagesContainer").clientHeight + "px";
+
+            document.getElementById("messagesViewPort").scrollTop =
+                document.getElementById("messagesViewPort").scrollHeight
+        });
+
+        $(window).on('resize', function () {
+            document.getElementById("profileInfoContainer").style.height =
+                document.getElementById("messagesContainer").clientHeight + "px";
+        });
+
+        function appendBreakLine(element) {
+            element.appendChild(document.createElement("br"));
+        }
+
+        const responses = [
+            "Hallo, ja...",
+            "Den er grei.",
+            "Nei, jeg har ikke tid til det nå.",
+            "Jeg er definitivt ikke en robot."
+        ]
+
+        function expandOnMobile() {
+            console.log("Window width check: " + window.innerWidth);
+            if (window.innerWidth < 600) {
+                $("#profileInfoContainer").toggleClass("profile_info_big_mobile");
+                $(".background_div_mobile").toggleClass("background_div_mobile_z_index");
+                $(".profileInfo").toggleClass("hide_info_on_mobile");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+Denne mappen inneholder prosjekter som jeg, eller jeg i samarbeid med andre studenter har skrevet.
