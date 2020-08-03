@@ -95,7 +95,7 @@ namespace PerlinNoise
 
 
 
-            return fade(AB + y * (CD - AB));
+            return AB + y * (CD - AB);
         }
 
         // Noise funksjon som tar i mot INT (fungerer ikke veldig bra)
