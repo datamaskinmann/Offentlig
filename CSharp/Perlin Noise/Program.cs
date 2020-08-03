@@ -1,36 +1,40 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Serialization;
 
 namespace PerlinNoise
 {
     class Program
     {
+        static PerlinNoiseMap m;
         static void Main(string[] args)
         {
-            PerlinNoiseMap m = PerlinNoiseMap.GenerateNoiseMap(1, 1);
-            Console.WriteLine("Done");
-            for (int x = 0; x < 119;)
+            Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+            while (true)
             {
-                for (int y = 0; y < 30;)
+                m = PerlinNoiseMap.GenerateNoiseMap(1, 1);
+                for (int i = 0; i < Console.LargestWindowWidth - 1; i++)
                 {
-                    for (float i = 0f; i < 1f; i += 1 / 119f)
+                    for (int j = 0; j < Console.LargestWindowHeight - 1; j++)
                     {
-                        for (float j = 0f; j < 1f; j += 1 / 30f)
-                        {
-                            float b = m.Noise(i, j);
-                            Console.SetCursorPosition(x, y);
-                            if (b < 0.3) WriteColour("■", ConsoleColor.Blue);
-                            if (b > 0.3 && b < 0.35) WriteColour("■", ConsoleColor.Yellow);
-                            if (b > 0.35 && b < 0.75) WriteColour("■", ConsoleColor.DarkGreen);
-                            else WriteColour("■", ConsoleColor.DarkGray);
-                            y++;
-                        }
-                        x++;
-                        y = 0;
+                        Console.SetCursorPosition(i, j);
+                        WriteColour("■", GetPixelColour(i, j));
                     }
-                    break;
+                }
+                switch (Console.ReadKey().Key)
+                {
+                    case ConsoleKey.Enter: continue;
+                    case ConsoleKey.Backspace:
+                        m.VectorDebug();
+                        Console.ReadLine();
+                        break;
+                    case ConsoleKey.DownArrow:
+                        Debug.WriteLine(Console.CursorLeft + " " + Console.CursorTop);
+                        break;
+                    case ConsoleKey.Escape: break;
                 }
             }
-            Console.ReadLine();
         }
 
         static void WriteColour(string Text, ConsoleColor Color)
@@ -38,6 +42,34 @@ namespace PerlinNoise
             Console.ForegroundColor = Color;
             Console.Write(Text);
             Console.ResetColor();
+        }
+
+        static ConsoleColor GetPixelColour(int left, int top)
+        {
+            float result = 0f;
+            if(left == 0 && top == 0)
+            {
+                result = m.Noise(0f, 0f);
+            }
+            else if(left == 0)
+            {
+                result = m.Noise(0f, (1f /Console.LargestWindowHeight)*top);
+            }
+            else if(top == 0)
+            {
+                result = m.Noise((1f /Console.LargestWindowWidth)*left, 0f);
+            }
+            else
+            {
+                result = m.Noise((1f / Console.LargestWindowWidth)*left, (1f / Console.LargestWindowHeight)*top);
+            }
+            result = Math.Abs(result);
+            if (result > 1f) result = 1f;
+            return result < 0.15 ? ConsoleColor.Blue
+                : result > 0.15 && result < 0.30 ? ConsoleColor.Yellow
+                : result > 0.30 && result < 0.75 ? ConsoleColor.DarkGreen
+                : result > 0.75 && result < 0.75125 ? ConsoleColor.Cyan
+                : ConsoleColor.DarkGray;
         }
     }
 }
