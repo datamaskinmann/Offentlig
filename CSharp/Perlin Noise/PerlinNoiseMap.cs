@@ -82,7 +82,6 @@ namespace PerlinNoise
             float AB = dots[0] + x * (dots[1] - dots[0]);
             float CD = dots[2] + x * (dots[3] - dots[2]);
 
-            float asda = AB + y * (CD - AB);
             return AB + y * (CD - AB);
         }
 
@@ -105,16 +104,6 @@ namespace PerlinNoise
             // the final output.
             return t * t * t * (t * (t * 6 - 15) + 10);         // 6t^5 - 15t^4 + 10t^3
         }
-
-
-
-        //private static void print(Dictionary<Vector2, Vector2> Vectorpairs)
-        //{
-        //    for(int i = 0; i < Vectorpairs.Keys.Count; i++)
-        //    {
-        //        Console.WriteLine("{0}, {1}", Vectorpairs.Keys.ToArray()[i], Vectorpairs[Vectorpairs.Keys.ToArray()[i]]);
-        //    }
-        //}
 
         private PerlinNoiseMap(int xSize, int ySize, Dictionary<Vector2, Vector2> VectorPairs)
         {
